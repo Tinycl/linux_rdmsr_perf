@@ -10,6 +10,7 @@
 
 #define IA32_MSR_PERF_GLOBAL_CTRL 0x38f
 #define IA32_MSR_PERF_GLOBAL_STATUS 0x38e
+#define IA32_MSR_PERF_GLOBAL_OVF_CTRL 0x390
 #define IA32_MSR_PERFEVTSEL0 0x186
 #define IA32_MSR_PERFEVTSEL1 0x187
 #define IA32_MSR_PERFEVTSEL2 0x188
@@ -56,21 +57,32 @@ struct ZXPERF
 	unsigned int core_msr_perf_global_ctrl_data_low;
 	unsigned int core_msr_perf_global_ctrl_data_high;
 
-	unsigned int core_msr_perfevtsl0;
-	unsigned int core_msr_perfevtsl0_data_low;
-	unsigned int core_msr_perfevtsl0_data_high;
-	unsigned int core_msr_pmc0;
-	unsigned int core_msr_pmc0_data_low;
-	unsigned int core_msr_pmc0_data_high;
 
-
+	unsigned int core_msr_perf_config_addr;
+	unsigned int core_msr_perf_config_data_low;
+	unsigned int core_msr_perf_config_data_high;
+	unsigned int core_msr_pmc_addr;
+	unsigned int core_msr_pmc_data_low;
+	unsigned int core_msr_pmc_data_high;
 };
-struct FETCH_ICACHE_EVENT
+
+
+
+enum ZXFUNCTION
 {
-	unsigned char L1I_ACESS;
-	unsigned char L1I_MISS;
+	RDMSR = 0,
+	WRMSR,
+	PERF,
 };
-
+struct ZXPERFTAG
+{
+	unsigned int cpunum;  //4
+	unsigned int whichcpu; //0 1 2 3
+	enum ZXFUNCTION function; 
+	unsigned int coreeventnum;
+	unsigned int uncoreeventnum;
+	struct ZXPERF zxperf;
+};
 
 
 

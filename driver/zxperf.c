@@ -65,10 +65,9 @@ static int zxperf_remap_mmap(struct file *filp, struct vm_area_struct *vma)
 long zxperf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	long retval = 0;
-	struct ZXPERF chx002perf;
-	unsigned long long temp;
+	struct ZXPERFTAG zx;
 	spin_lock(&spinlock);
-	if(copy_from_user(&chx002perf, (void __user *)arg, sizeof(struct ZXPERF)))
+	if(copy_from_user(&zx, (void __user *)arg, sizeof(struct ZXPERFTAG)))
 	{	
 		spin_unlock(&spinlock);
 		printk(KERN_NOTICE "fun: copy_from_user error! \n");
@@ -80,35 +79,34 @@ long zxperf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	{
 	case ZXPERF_RDMSR:
 	{
-		rdmsr(chx002perf.msr, chx002perf.msr_data_low, chx002perf.msr_data_high);
+		rdmsr(zx.zxperf.msr, zx.zxperf.msr_data_low, zx.zxperf.msr_data_high);
 		break;
 	}
 	case ZXPERF_WRMSR:
 	{
-		wrmsr(chx002perf.msr,chx002perf.msr_data_low,chx002perf.msr_data_high);
-		rdmsr(chx002perf.msr,chx002perf.msr_data_low,chx002perf.msr_data_high);
+		wrmsr(zx.zxperf.msr,zx.zxperf.msr_data_low,zx.zxperf.msr_data_high);
+		rdmsr(zx.zxperf.msr,zx.zxperf.msr_data_low,zx.zxperf.msr_data_high);
 		break;
 	}
 	case ZXPERF_INIT:
 	{
-		rdmsr(chx002perf.core_msr_perf_global_ctrl,chx002perf.core_msr_perf_global_ctrl_data_low,chx002perf.core_msr_perf_global_ctrl_data_high);
-		temp = (unsigned long long )(((unsigned long long )chx002perf.core_msr_perf_global_ctrl_data_high << 32) | chx002perf.core_msr_perf_global_ctrl_data_low);
-		printk("ioctl ZXPERF_INIT \n");
-		printk("core_msr_perf_global_ctrl data is %llx \n", temp );
+		//disable
+
+		//enable
+		rdmsr(zx.zxperf.core_msr_perf_global_ctrl, zx.zxperf.core_msr_perf_global_ctrl_data_low,zx.zxperf.core_msr_perf_global_ctrl_data_high);
+		zx.zxperf.core_msr_perf_global_ctrl_data_high |= 0xffffffff;
+		zx.zxperf.core_msr_perf_global_ctrl_data_low |= 0xffffffff;
+		wrmsr(zx.zxperf.core_msr_perf_global_ctrl, zx.zxperf.core_msr_perf_global_ctrl_data_low,zx.zxperf.core_msr_perf_global_ctrl_data_high);
 		break;
 	}
 	case ZXPERF_EVENT_SET:
 	{
-		wrmsr(chx002perf.core_msr_perfevtsl0,chx002perf.core_msr_perfevtsl0_data_low,chx002perf.core_msr_perfevtsl0_data_high);
-		printk("ioctl ZXPERF_EVENT_SET \n");
+		wrmsr(zx.zxperf.core_msr_perf_config_addr,zx.zxperf.core_msr_perf_config_data_low,zx.zxperf.core_msr_perf_config_data_high);
 		break;
 	}
 	case ZXPERF_COUNTER_READ:
 	{
-		rdmsr(chx002perf.core_msr_pmc0,chx002perf.core_msr_pmc0_data_low, chx002perf.core_msr_pmc0_data_high);
-		temp = (unsigned long long )chx002perf.core_msr_pmc0_data_high<<32 | chx002perf.core_msr_pmc0_data_low;
-		printk("ioctl ZXPERF_COUNTER_READ \n");
-		printk("core_msr_pmc0 data is %llx \n", temp);
+		rdmsr(zx.zxperf.core_msr_pmc_addr,zx.zxperf.core_msr_pmc_data_low, zx.zxperf.core_msr_pmc_data_high);
 		break;
 	}
 	default:
@@ -118,7 +116,7 @@ long zxperf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	}
 		
 	}
-	if(copy_to_user((void __user*)arg, &chx002perf,sizeof(struct ZXPERF)))
+	if(copy_to_user((void __user*)arg, &zx,sizeof(struct ZXPERFTAG)))
 	{
 		spin_unlock(&spinlock);
 		printk("fun: copy_to_user is error! \n");

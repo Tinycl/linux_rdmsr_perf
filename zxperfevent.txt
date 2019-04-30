@@ -1,0 +1,396 @@
+Index		Events Name	Discription	Unit	
+Module name	Event Select				
+Fetch_Icache	0	L1I_ACCESS	number of l1i cache access for valid normal fetch,including un-cacheable access	3	
+	1	L1I_MISS	number of l1i cache miss for valid normal fetch,including un-cacheable miss	3	
+	2	L1I_L2_HIT	number of l2 hit for l1i cacheable load request	3	
+	3	L1I_L2 CAST OUT	number of l2 castout operation for l1i	3	
+	4	L1I_STATE.C	number of fetch won arbitration (stage C)	3	
+	5	L1I_STATE.U	number of valid normal fetch	3	
+	6	L1I_STATE.D	cycles of l1i waiting for first data ready from L2 (l1i load request waiting for data stage)	3	
+	7	L1I_STATE.R	cycles of l1i waiting for an Response Buffer to become available	3	
+	8	ICACHE.IFETCH_STALL 	cycles where a code-fetch stalled due to L1i cache miss or an iTLB miss 	3	
+	9	ITLB.ITLB_FLUSH 	number of iTLB flushes, includes 4k/2M/4M pages. 	3	
+	10	L1I_PREFETCH	number of prefetch	3	
+	11	L1I_PREFETCH_MISS	number of prefetch miss	3	
+BTAC_IFETCH	0	BR_INST_EXEC.ALL_BRANCHES 	number of all executed near branches (not necessarily retired).	7	
+	1	BR_INST_EXEC.COND 	number of executed, conditional, near branches(not necessarily retired). 	7	
+	2	BR_INST_EXEC.DIRECT_JMP 	number of executed, unconditional, near direct branches excluding calls and indirect branches. 	7	
+	3	BR_INST_EXEC.DIRECT_NEAR_CALL 	number of executed, unconditional, near call branches.	7	
+	4	BR_INST_EXEC.INDIRECT_JMP_NON_CALL_RET 	number of executed, indirect near branches excluding calls nor returns. 	7	
+	5	BR_INST_EXEC.INDIRECT_NEAR_CALL 	number of executed, indirect near calls.	7	
+	6	BR_INST_EXEC.NONTAKEN 	number of executed, non-taken, conditional,near branches. 	7	
+	7	BR_INST_EXEC.RETURN_NEAR 	number of executed,indirect near return branches. 	7	
+	8	BR_INST_EXEC.TAKEN 	number of executed, taken, near branches including conditional and unconditional.	7	
+	9	BR_MISP_EXEC.ALL_BRANCHES 	number of all executed, mispredicted, near branches (not necessarily retired). 	7	
+	10	BR_MISP_EXEC.COND 	number of executed, mispredicted, conditional near branches. 	7	
+	11	BR_MISP_EXEC.DIRECT_NEAR_C ALL 	number of executed, mispredicted, unconditional, near call branches. 	7	
+	12	BR_MISP_EXEC.INDIRECT_JMP_NON_CALL_RET 	number of executed, mispredicted, indirect near branches excluding calls nor returns. 	7	
+	13	BR_MISP_EXEC.INDIRECT_NEAR_CALL 	number of executed, mispredicted indirect near calls. 	7	
+	14	BR_MISP_EXEC.NONTAKEN 	number of executed, mispredicted, non-taken, conditional, near branches. 	7	
+	15	BR_MISP_EXEC.RETURN_NEAR 	number of executed, mispredicted, indirect, near return branches. 	7	
+	16	BR_MISP_EXEC.TAKEN 	number of executed, mispredicted, taken, near branches including conditional and unconditional.	7	
+	17	LSD.UOPS	Number of intructions in loop buffer mode delivered by the FIQ.	7	
+	18	BACLEARS.ANY	number of decode stage flush.	7	
+	19	IDQ.EMPTY	Number of cycles the FIQ is empty.	7	
+	20	BR_TKN_BUBBLE 	number of bubbles for predicted taken branches. 	7	
+XIB FMT	0	ILD_STALL.LCP                                  	the instrucion decode need two cycle	8	
+	1	ILD_STALL.IQ_FULL 	FIQ have space for instruction	8	
+	2	SIMD_FP_256.PACKED_SINGLE	the instrucion packed single precision floating-point values	8	
+	3	SIMD_FP_256.PACKED_DOUBLE	the instrucion packed double precision floating-point values	8	
+XLATE	0	UOPS_RETIRED.MACRO_FUSION.2INST	2 X86 instruction fusion 	9	
+	1	UOPS_RETIRED.MACRO_FUSION.3INST	3 X86 instruction fusion 	9	
+"RAT
+"	0	ROB_STALL_CYCLE	Cycles stalled of  ROB.	1	
+	1	UOPS_ISSUED.ANY	Increments each cycle the # of Uops issued by the RAT to RS.	1	
+	2	IDQ.MITE_ALL_UOPS	# of uops delivered to IDQ from any path.	1	
+	3	IDQ.MS_UOPS	Increment each cycle # of uops delivered to IDQ from MS by either DSB or MITE.	1	
+	4	XLATE_3UOPS	Counts cycles MITE is delivered have three uops from XLATE.	1	
+	5	XLATE_2UOPS	Counts cycles MITE is delivered only have two uops from XLATE.	1	
+	6	XLATE_1UOPS	Counts cycles MITE is delivered only have one uops from XLATE.	1	
+	7	XLATE_0UOPS	Counts cycles MITE is delivered none from XLATE.	1	
+	8	UCODE_3UOPS	Counts cycles MITE is delivered have three uops from UCODE.	1	
+	9	UCODE_2UOPS	Counts cycles MITE is delivered only have two uops from UCODE.	1	
+	10	UCODE_1UOPS	Counts cycles MITE is delivered only have one uops from UCODE.	1	
+	11	UCODE_0UOPS	Counts cycles MITE is delivered none from UCODE.	1	
+	12	NATTIVE_BRANCH_STALL	Cycles stalled due to native branch	1	
+	13	IDQ.MITE_UOPS	Increment each cycle # of uops delivered to IDQ from MITE path.	1	
+	14	RESOURCE_STALLS.FPCW	"Counts the number of cycles while execution was
+stalled due to writing the floating-point unit (FPU)
+control word."	1	
+	15	IDQ.MS_MITE_UOPS	Increment each cycle # of uops delivered to IDQ when MS_busy by MITE.	1	
+	16	GPR_READ_STALL	Counts times of the uop which Read GPR serialize.	1	
+	17	MPR_READ_STALL	Counts times of the uop which Read MPR serialize.	1	
+	18	EFLAGS_READ_STALL	Counts times of the uop which Read EFLAGS serialize.	1	
+	19	DREG_READ_STALL	Counts times of the uop which Read DREG serialize.	1	
+	20	SRC3_MUTIPLE_DEPENDENCY	Counts times of the uop which SRC3 dependent on mutiple uops.	1	
+	21	FPSW_READ_STALL	Counts times of the uop which Read FPSW serialize.	1	
+	22	DOUBLE_FENCE_CYCLE	Counts times of the uop which have double fence.	1	
+	24	DELAYED_BYPASS.FP	"This event counts the number of times floating point
+operations use data immediately after the data was
+generated by a non-floating point execution unit. Such cases
+result in one penalty cycle due to data bypass between the
+units.
+Use IA32_PMC1 only."	1	
+	25	CYCLE_ACTIVITY.CYCLES_NO_EXECUTE	Cycles of dispatch stalls. Set Any Thread to count per core.	1	
+	26	RESOURCE_STALLS.ROB	Cycles stalled due to re-order buffer full.	1	
+	27	IDQ.ALL_MITE_CYCLES_3_UOPS	Counts cycles MITE is delivered three uops.	1	
+	28	IDQ.ALL_MITE_CYCLES_ANY_UOP S	Counts cycles MITE is delivered at least one uops. Set Cmask = 1.	1	
+	29	RAT_STALLS.PARTIAL_CYCLES	"This event counts the number of cycles instruction
+execution latency became longer than the defined latency
+because the instruction uses a register that was partially
+written by previous instructions."	1	
+	30	RAT_STALLS.FLAGS 	Cycles stalled due to the uop of Read FLAGS	1	
+	32	RAT_IDLE	Counts cycles rat is idle.	1	
+	33	UCODE_CYCLES	Counts cycles instruction stream is on ucode.	1	
+	34	FUSED_STRENGTH	"Counts the number of fused Uops that were issued
+from the Register Allocation Table to the
+Reservation Station."	1	
+	36	INT2X87_CYCLE	Counts times of X87 instruction switch to int instruction	1	
+	37	UCFCEXIT_UOP	Counts the number of X86 instruction which trap to ucode but only need one cycle to decode it.	1	
+RS	0	UOPS_DISPATCHED.RS0	RS0 dispatch uop	4	
+	1	UOPS_DISPATCHED.RS1	RS1 dispatch uop	4	
+	2	UOPS_DISPATCHED.RS2	RS2 dispatch uop	4	
+	3	UOPS_DISPATCHED.RS3	RS3 dispatch uop	4	
+	4	UOPS_DISPATCHED.RS45.Port0	RS45 dispatch uop in port0	4	
+	5	UOPS_DISPATCHED.RS45.Port1	RS45 dispatch uop in port1	4	
+	8	RESOURCE_STALLS.RS0	RS0 full	4	
+	9	RESOURCE_STALLS.RS1	RS1 full	4	
+	11	RESOURCE_STALLS.RS2	RS2 full	4	
+	12	RESOURCE_STALLS.RS3	RS3 full	4	
+	13	RESOURCE_STALLS.RS45	RS45 full	4	
+	15	RS_EVENTS.EMPTY_CYCLES	RS0/1/2/3/45 empty	4	
+	16	RESOURCE_STALLS.ANY	RS0/1/2/3/45(include ldQ/stQ) full	4	
+	17	RESOURCE_STALLS.RS	RS0/1/2/3/45(not include ldQ/stQ) full	4	
+	18	RESOURCE_STALLS.SB	stQ full	4	
+	19	RESOURCE_STALLS.LD	ldQ full	4	
+	20	RS12_READY2_ISSUE1	RS1 and RS2 has >= 2 uops ready, but only dispatch 1 uop from RS1 and RS2	4	
+	21	RS45_READY2_ISSUE1	RS45 has >= 2 uops ready, but only dispatch 1 uop from RS45	4	
+	22	RS12_03_SAMEISSUE	RS1/2 and RS45 dispatch uop at same cycle	4	
+	23	MFX_HIT	RS0 has media fixup	4	
+MOB	0	TABLE_WALK.DATA	data tablewalk	5	
+	1	TABLE_WALK.CODE	code tablewalk 	5	
+	2	LD_QUEUE.EMPTY	loadq empty	5	
+	3	LD_QUEUE.FULL	loadq full	5	
+	4	LD_MISS	load miss the l1d cache when first dispathed	5	
+	5	LD_MISS.WHY	load wants store data, but the data not ready when first dispathed	5	
+	6	LD_MISS.FILL_QUEUE	load wants push fillq, but the fillq is full when first dispathed	5	
+	7	LD_COMPLETE	load done completely(complete in mob,not in rob)	5	
+	8	LD_REPLAY	load replay because of various of resasons	5	
+	9	LD_REPLAY.NO_DELAY	load replay immediately	5	
+	10	LD_REPLAY.ST_MAT_BYTR	load replay since collide with store, but cant't forward	5	
+	11	LD_REPLAY.ST_FWD	load replay since forward with store, but the data not ready	5	
+	12	LD_REPLAY.LD_PENDING	load replay since older fence is pending	5	
+	13	LD_REPLAY.ST_PENDING	load replay since it should wait till order store complete	5	
+	14	LD_REPLAY.FILL_QUEUE_FULL	load replay since it wants push fillq, but fillq is full	5	
+	15	LD_REPLAY.FILL_QUEUE_PENDING	load replay since it should wait till fillq empty	5	
+	16	LD_REPLAY.FILL_QUEUE_FWD	load replay since forward with fillq, but the data not ready	5	
+	17	LD_REPLAY.RET ROB IDX	load replay since it should wait till rob oldest	5	
+	18	LD_REPLAY.WCB_MAT	load replay since it match wcb entry	5	
+	19	LD_REPLAY.SNARF_ST_QUEUE	load should snarf the data from storeq, but data not ready	5	
+	20	LD_REPLAY.SNARF_FILL_QUEUE	load should snarf the data from fillq, but data not ready	5	
+	21	FILL_QUEUE.PUSH	number of fillq pushs at the current cycle	5	
+	22	FILL_QUEUE.PUSH_LDI	number of fillq pushs by load operation at the current cycle	5	
+	23	FILL_QUEUE.VICTIM_RESTART	number of victim restart since match snoopq or storeq	5	
+	24	FILL_QUEUE.EVEICT_CLEAN	number of evict requests for clean cacheline	5	
+	25	FILL_QUEUE.EVEICT_DIRTY	number of evict requests for dirty cacheline	5	
+	26	FILL_QUEUE.L2_MISS	number of l2 miss pushed by fillq 	5	
+	27	FILL_QUEUE.L2_HIT	number of l2 hit pushed by fillq 	5	
+	29	FILL_QUEUE.FULL	Cycles of filq full	5	
+	30	FILL_QUEUE.L2_DATA_VALID	number of l2 data feedbacks pushed by fillq 	5	
+	31	ST_REPLAY_LD	number of load replays since store or snoop hits the completed loadq entry, called msreplay	5	
+	32	LD_HIT_SNOOP_QUEUE	number of load matching snoopq when first dispathed 	5	
+	33	TABLE_WALK.DTLB_UPDATE	number of dtlb update	5	
+	34	TABLE_WALK.DTLB_UPDATE.4KB	number of dtlb update for 4k page	5	
+	35	TABLE_WALK.DTLB_UPDATE.2MB	number of dtlb update for 2m page	5	
+	36	TABLE_WALK.DTLB_UPDATE.1GB	number of dtlb update for 1g page	5	
+	37	TABLE_WALK.ITLB_UPDATE	number of itlb update	5	
+	38	TABLE_WALK.ITLB_UPDATE.4KB	number of itlb update for 4k page(include L2 TLB hit and tbale walk)	5	
+	39	TABLE_WALK.ITLB_UPDATE.2MB	number of itlb update for 2m page	5	
+	40	TABLE_WALK.ITLB_UPDATE.1GB	number of itlb update for 1g page	5	
+	41	TABLE_WALK.PREFETCH	number of dtlb update for software prefetch	5	
+	42	TABLE_WALK.STREAM PF	number of dtlb update for hardware prefetch	5	
+	43	DTLB_LOAD_MISSES.LARGE_PAGE_WALK_DURATION	number of tablewalks for a 2M/1G page completed for load operation	5	
+	44	DTLB_LOAD_MISSES.MISS_CAUSES_A_WALK	number of load operations miss all level tlbs and cause a tablewalk	5	
+	45	DTLB_LOAD_MISSES.STLB_HIT	number of load operations miss 1st level tlb but hit 2nd level tlb	5	
+	46	DTLB_LOAD_MISSES.WALK_COMPLETED	number of load operations miss all level tlbs and cause a tablewalk and complete successfully	5	
+	47	DTLB_LOAD_MISSES.WALK_DURATION	number of tablewalks caused by load operation	5	
+	48	DTLB_STORE_MISSES.MISS_CAUS ES_A_WALK	number of store operations miss all level tlbs and cause a tablewalk	5	
+	49	DTLB_STORE_MISSES.STLB_HIT	number of store operations miss 1st level tlb but hit 2nd level tlb	5	
+	50	DTLB_STORE_MISSES.WALK_COMPLETED	number of store operations miss all level tlbs and cause a tablewalk and complete successfully	5	
+	51	DTLB_STORE_MISSES.WALK_DUR ATION	number of tablewalks caused by store operation	5	
+	52	ITLB_MISSES.MISS_CAUSES_A_WALK 	number of code operations miss all level tlbs and cause a tablewalk	5	
+	53	ITLB_MISSES.STLB_HIT	number of code operations miss 1st level tlb but hit 2nd level tlb	5	
+	54	ITLB_MISSES.WALK_COMPLETED	number of code operations cause a tablewalk and complete successfully	5	
+	55	ITLB_MISSES.WALK_DURATION	number of tablewalks caused by code operation	5	
+	56	L1D.REPLACEMENT	number of lines brought into the L1 data cache by fillq relaod	5	
+	57	L2_RQSTS.ALL_DEMAND_DATA_ RD	number of any demand and L1 HW prefetch data load requests to L2. 	5	
+	58	L2_RQSTS.RFO_HITS	number of store RFO requests that hit the L2 cache. 	5	
+	59	L2_RQSTS.RFO_MISS	number of store RFO requests that miss the L2 cache. 	5	
+	60	LOAD_HIT_PRE.HW_PF	Non-SW-prefetch load dispatches that hit fillq allocated for H/W prefetch. 	5	
+	61	LOAD_HIT_PRE.SW_PF	Non-SW-prefetch load dispatches that hit fillq allocated for S/W prefetch. 	5	
+	62	LOCK_CYCLES.CACHE_LOCK_DURATION	Cycles in which the L1D is locked. 	5	
+	63	LOCK_CYCLES.SPLIT_LOCK_UC_LOCK_DURATION	Cycles in which the L1D and L2 are locked, due to a UC lock or split lock. 	5	
+	64	MISALIGN_MEM_REF.LOADS	Speculative cache-line split load uops dispatched to L1D. 	5	
+	65	MISALIGN_MEM_REF.STORES	Speculative cache-line split Store-address uops dispatched to L1D. 	6	
+	66	TLB_FLUSH.DTLB_THREAD	DTLB flush attempts of the thread-specific entries. 	5	
+	67	TLB_FLUSH.STLB_ANY	number of any tlb flush attempts. 	5	
+	68	MEM_LOAD_UOPS_LLC_HIT_RETIRED.XSNP_HIT 	Retired load uops whose data source was an on-package LLC hit and cross-core snoop hits. 	5	
+	69	MEM_LOAD_UOPS_LLC_HIT_RETIRED.XSNP_HITM 	Retired load uops whose data source was an on-package LLC with HitM responses.  (need change to E if possible)	5	
+	70	MEM_LOAD_UOPS_LLC_HIT_RETIRED.XSNP_MISS 	Retired load uops whose data source was an on-package LLC hit and cross-core snoop missed. 	5	
+	73	MEM_LOAD_UOPS_RETIRED.HIT_LFB 	Retired load uops which data sources were load uops missed L1 but hit fillq due to preceding miss to the same cache line with data not ready. 	5	
+	74	MEM_LOAD_UOPS_RETIRED.L1_HIT 	Retired load uops with L1 cache hits as data sources. 	5	
+	75	MEM_LOAD_UOPS_RETIRED.L1_MISS 	Retired load uops whose data source followed an L1 miss 	5	
+	77	MEM_LOAD_UOPS_RETIRED.LLC_MISS 	Retired load uops whose data source is LLC miss 	5	
+	78	ST_QUEUE.EMPTY	storeq empty	6	
+	79	ST_QUEUE.FULL	storeq full	6	
+	80	ST_COMPLETE	store done completely(complete in mob,not in rob)	6	
+	81	ST_REPLAY.ST_FWD	number of store replays for trigger msreplay since forward mismatch to the load with same cycle	6	
+	82	ST_REPLAY.FILL_QUEUE FULL	store replay since it wants push fillq, but fillq is full	6	
+	83	ST_REPLAY.WCB_MAT	store replay since it match wcb entry	6	
+	84	ST_REPLAY.EVICT	store replay since it match evicting cacheline	6	
+	85	ST_REPLAY.NO_DELAY	store replay immediately	6	
+	86	STORE_BLOCK.ORDER	Cycles while store is waiting for apreceding matched snoop done	6	
+	87	HW_PRE_REQ.DL1_MISS	L1 data cache prefetch requests	5	
+	88	SSE_PRE_EXEC.NTA	Prefetch NTA instructions executed	5	
+	89	SSE_PRE_EXEC.L1	Prefetch T0 instructions executed	5	
+	90	SSE_PRE_EXEC.L2	Prefetch T1 and Prefetch T2 instructions executed	5	
+	91	SSE_PRE_MISS.NTA	Prefetch NTA instructions missing all cache levels	5	
+	92	SSE_PRE_MISS.L1	PrefetchT0 instructions missing all cache levels	5	
+	93	SSE_PRE_MISS.L2	PrefetchT1 and PrefetchT2 instructions missing all cache levels	5	
+	94	L1D_CACHE_LOCK.M	Counts lock load that hitM in the L1 data cache	5	
+	95	L1D_CACHE_LOCK.E	Counts lock load that hitE in the L1 data cache	5	
+	96	L1D_CACHE_LOCK.S	Counts lock load that hitS in the L1 data cache	5	
+	97	L1D_CACHE_LOCK.I	Counts lock load that miss in the L1 data cache and fillq	5	
+	98	L1D.ALL_M_REPLACEMENT	Cache lines in M state evicted out of L1D due to Snoop HitM or dirty line replacement.	5	
+	99	L1D_CACHE_PREFETCHES.STREAM	number of hardware prefetch requests dispatched out of the prefetch FIFO.(no replay)	5	
+	100	DTLB_PREFETCHES	number of hardware pte prefetch requests dispatched out of the prefetch FIFO.	5	
+	101	DTLB_PREFETCHES_MISSES	number of hardware pte prefetch requests miss the l1d data cache	5	
+	102	SnoopQueue.Full	number of FillQ full	5	
+	103	L1D_CACHE_PREFETCHES.BoxPreftch	number of hardware prefetch requests dispatched out of the prefetch FIFO.(no replay)	5	
+	104	Load.retire	number of retire/commit load	5	
+	105	Store.retire	number of retire/commit Store,no LEA	6	
+ROB	0	INST_RETIRED.ANY	Number of instructions at retirement. 	0	
+	1	UOP_RET.Any	Uop number	0	
+	2	UOP_RET.XLATE	Xlate uop number	0	
+	3	UOP_RET.UC	Ucode uop number	0	
+	4	UOP_RET.No	No uop retire	0	
+	5	UOP_RET.1UOP	Retire 1 uop	0	
+	6	UOP_RET.2UOP	Retire 2 uops	0	
+	7	UOP_RET.3UOP	Retire 3 uops	0	
+	8	NATTIVE_BRANCH_TAKEN	Native branch taken	0	
+	9	MEM_UOPS_RETIRED.STLB_MISS 	Qualify retired memory uops with STLB miss. Must combine with umask 01H, 02H, to produce counts. 	0	
+	10	MEM_UOPS_RETIRED.SPLIT 	Qualify retired memory uops with line split. Must combine with umask 01H, 02H, to produce counts. 	0	
+	11	MEM_UOPS_RETIRED.LD_ST 	memory uop retired	0	
+	12	REPLAY_CYCLE	Replay cycle	0	
+	13	REPLAY_REASON.LD_MISS	Replay reason: load miss	0	
+	14	REPLAY_REASON.NOT_LD_MISS	Replay reason: not load miss	0	
+	15	MACHINE_CLEARS.SMC 	Number of self-modifying-code machine clears detected. 	0	
+	16	MACHINE_CLEARS.MEMORY_ORDERING 	Counts the number of machine clears due to memory order conflicts. (mob replay self)	0	
+	17	L1D_PEND_MISS.PENDING 	Increments the number of outstanding L1D misses every cycle. Set Cmaks = 1 and Edge =1 to count occurrences. (fast replay)	0	
+	18	CPU_CLK_UNHALTED	Counts the number of thread cycles while the thread is not in a halt state. The thread enters the halt state when it is running the HLT instruction. The core frequency may change from time to time due to power or thermal throttling. 	0	
+	19	CPL_CYCLES.RING123 	Unhalted core cycles when the thread is not in ring 0. 	0	
+	20	CPL_CYCLES.RING0	Unhalted core cycles when the thread is in ring 0. 	0	
+	21	FP_ASSIST.ANY	Cycles with any input/output SSE* or FP assists. 	0	
+	22	FP_ASSIST_SIMD_INPUT	Number of SIMD FP assists due to input values. 	0	
+	23	FP_ASSIST_SIMD_OUTPUT	Number of SIMD FP assists due to Output values. 	0	
+	24	FP_ASSIST_X87_INPUT	Number of X87 FP assists due to input values. 	0	
+	25	FP_ASSIST_X87_OUTPUT	Number of X87 FP assists due to Output values. 	0	
+	26	ARITH_FPU_DIV_ACTIVE	Cycles that the divider is active, includes INT and FP. Set 'edge =1, cmask=1' to count the number of divides. 	0	
+	27	FP_COMP_OPS_EXE_x87	Counts number of X87 uops executed. 	0	
+	28	FP_COMP_OPS_EXE_SSE_SCALAR_DP	Counts number of SSE* or AVX-128 double precision FP packed uops executed. 	0	
+	29	FP_COMP_OPS_EXE_SSE_PACKED_SP	Counts number of SSE* or AVX-128 single precision FP scalar uops executed. 	0	
+	30	FP_COMP_OPS_EXE_SSE_FP_SCALAR_SP	Counts number of SSE* or AVX-128 single precision FP packed uops executed. 	0	
+	31	FP_COMP_OPS_EXE.SSE_FP_PACKED_DP	Counts number of SSE* or AVX-128 double precision FP scalar uops executed. 	0	
+	32	REPLAY_MULTI	count multi replay 	0	
+	33	PARKING_CYCLE.REISSUE	count reissue partking	0	
+	34	BLOCK_RET.INT	count int exception block retire	0	
+	35	BLOCK_RET.REISSUE	count reissue block retire	0	
+	36	BLOCK_RET.MSBLOCK_SELF	count ms replay block retire	0	
+	37	RESOURCE_STALLS.BR_MISS_CLEAR	branch miss predict cycle	0	bad
+	38	UOPS_ISSUED.SiNGLE_MUL	Counts number of SSE* or AVX-128 single precision FP scalar uops executed. Counts number of SSE* or AVX-128 single precision FP packed uops executed.	0	
+	40	BRANCH.ALL	Counts the number of branch instructions retired. 	0	
+	41	BRANCH.ALL.MISS	Mispredicted branch instructions at retirement. 	0	
+	64	RETIRED_UNIT.MOVE	Uop number retired from Move unit	0	
+	65	RETIRED_UNIT.SIMPLE	Uop number retired from Is unit	0	
+	66	RETIRED_UNIT.MobUnit1.uop	Uop number retired from Mob1Unit	0	
+	67	RETIRED_UNIT.MobUnit2.uop	Uop number retired from Mob2Unit	0	
+	69	RETIRED_UNIT.FMUL	Uop number retired from Fmul unit	0	
+	70	RETIRED_UNIT.FADD	Uop number retired from Fadd unit	0	
+	72	RETIRED_UNIT.MEDIA	Uop number retired from media unit	0	
+	128	UCODE_ADDRESS.HIT	Ucode address hit	0	
+	130	CPU_CLK.CORE	unhalt core clock	0	not count when perfmux clk gating
+	131	CPU_CLK.BUS	unhalt bus clock	0	
+L2	0	L2_LINES_IN.ALL	All cache lines filling in L2, include the cache line filled by Prefetch	2,11	
+	1	L2_LINES_IN.E	All cache lines in E state filling in L2, include the cache line filled by Prefetch	2,11	
+	2	L2_LINES_IN.S	All cache lines in S state filling in L2, include the cache line filled by Prefetch	2,11	
+	3	L2_LINES_OUT.DEMAND_CLEAN	Clean L2 cache lines evicted by demand. It will count the Clean L2 cache lines evicted by L1i/L1d load(no L2 Prefetch). 	2,11	
+	4	L2_LINES_OUT.DEMAND_DIRTY	Dirty L2 cache lines evicted by demand. It will count the Dirty L2 cache lines evicted by L1i/L1d load(no L2 Prefetch). 	2,11	
+	5	L2_LINES_OUT.DIRTY_ALL	All dirty L2 evicted cache lines  	2,11	
+	6	L2_LINES_OUT.PF_CLEAN	Clean L2 cache lines evicted by L2 Prefetch	2,11	
+	7	L2_LINES_OUT.PF_DIRTY	Dirty L2 cache lines evicted by L2 Prefetch	2,11	
+	8	L2_LINES_OUT.ALL	All L2 evicted cache lines (There are some thing wrong, because SizeEng has include. Need confirm I think this is useful).	2,11	
+	9	L2_TRANS.ALL_PF	All L2 HW prefetch Transactions accessing L2 pipe.	2,11	
+	10	L2_TRANS.ALL_REQUESTS	All Transactions accessing L2 pipe.	2,11	
+	11	L2_TRANS.CODE_RD	All Code Read Transactions access to L2 Pipe	2,11	
+	12	L2_TRANS.DEMAND_DATA_RD	All Data Read Transactions access to L2 Pipe	2,11	
+	13	L2_TRANS.L1D_WB	All Mob Evict request to L2 Pipe	2,11	
+	14	L2_TRANS_RFO.SNOOP	RFO (read for ownershaip) bus snoop requests that access L2 cache	2,11	
+	15	L2_TRANS_RFO.RDINV	RFO (read for ownershaip) Core requests that access L2 cache	2,11	
+	16	L2_TRANS.PIPE_REPLAY	Total L2 Pipe replay	2,11	
+	17	L2_TRANS.PIPE_REPLAY_FILLQ_FULL	Total L2 Pipe replay caused by fillQ full	2,11	
+	18	L2_TRANS.PIPE_REPLAY_FILLQ_FULL_C0	Core0 L2 Pipe replay caused by fillQ full	2,11	
+	19	L2_TRANS.PIPE_REPLAY_FILLQ_FULL_C1	Core1 L2 Pipe replay caused by fillQ full	2,11	
+	20	L2_TRANS.PIPE_REPLAY_FILLQ_FULL_C2	Core2 L2 Pipe replay caused by fillQ full	2,11	
+	21	L2_TRANS.PIPE_REPLAY_FILLQ_FULL_C3	Core3 L2 Pipe replay caused by fillQ full	2,11	
+	22	L2_TOTAL_MISS	Total Load Request Miss in L2	2,11	
+	23	L2_TOTAL_MISS_C0	Total C0 Load Request Miss in L2	2,11	
+	24	L2_TOTAL_MISS_C1	Total C1 Load Request Miss in L2	2,11	
+	25	L2_TOTAL_MISS_C2	Total C2 Load Request Miss in L2	2,11	
+	26	L2_TOTAL_MISS_C3	Total C3 Load Request Miss in L2	2,11	
+	27	L2_TOTAL_L1D_REQ	All L1d Cacheable Requests accessing L2 pipe.	2,11	
+	28	L2_DATA_LOAD_MISS	All L1d Cacheable Requests Miss in L2 pipe.	2,11	
+	29	L2_DATA_LOAD_MISS_C0	Total C0 Data Load Request Miss in L2	2,11	
+	30	L2_DATA_LOAD_MISS_C1	Total C1 Data Load Request Miss in L2	2,11	
+	31	L2_DATA_LOAD_MISS_C2	Total C2 Data Load Request Miss in L2	2,11	
+	32	L2_DATA_LOAD_MISS_C3	Total C3 Data Load Request Miss in L2	2,11	
+	33	L2_CODE_LOAD_MISS	All L1i Cacheable Requests Miss in L2 pipe.	2,11	
+	34	L2_CODE_LOAD_MISS_C0	Total C0 Code Load Request Miss in L2	2,11	
+	35	L2_CODE_LOAD_MISS_C1	Total C1 Code Load Request Miss in L2	2,11	
+	36	L2_CODE_LOAD_MISS_C2	Total C2 Code Load Request Miss in L2	2,11	
+	37	L2_CODE_LOAD_MISS_C3	Total C3 Code Load Request Miss in L2	2,11	
+	38	L2_TOTAL_DEMAND_MISS	Total Code & Data Load Request Miss in L2 (non prefetch)	2,11	
+	39	L2_FILLQ_PUSH.BPF	Total Box Prefetch Push L2 FillQ 	2,11	
+	40	L2_FILLQ_PUSH.SPF	Total Stream Prefetch Push L2 FillQ 	2,11	
+	41	L2_FILLQ_PUSH.NOR	Total Cacheable requests Push FillQ (non PF)	2,11	
+	42	L2_FILLQ_PUSH.ALL	Total Push FillQ	2,11	
+	43	L2_FILLQ_FULL_CYC	Total FillQ Full Cycle	2,11	
+	44	L2_SPF_C0	Total Stream Prefetch for Core0	2,11	
+	45	L2_BPF_C0	Total Box Prefetch for Core0	2,11	
+	46	L2_SPF_C1	Total Stream Prefetch for Core1	2,11	
+	47	L2_BPF_C1	Total Box Prefetch for Core1	2,11	
+	48	L2_SPF_C2	Total Stream Prefetch for Core2	2,11	
+	49	L2_BPF_C2	Total Box Prefetch for Core2	2,11	
+	50	L2_SPF_C3	Total Stream Prefetch for Core3	2,11	
+	51	L2_BPF_C3	Total Box Prefetch for Core3	2,11	
+	52	L2_SNOOP_RSP.CLEAN.NSOK	response clean for RFO bus snoop requests	2,11	
+	53	L2_SNOOP_RSP.CLEAN.SOK	response clean for non RFO bus snoop requests	2,11	
+	54	L2_SNOOP_RSP.DIRTY	All dirty response for bus snoop requests	2,11	
+	55	L2_SNOOP_RSP.DIRTY.NSOK	All dirty response for RFO bus snoop requests	2,11	
+	56	L2_SNOOP_RSP.DIRTY.SOK	All dirty response for non RFO bus snoop requests	2,11	
+	57	L2_QUERY_RSP.DIRTY	All Core Dirty Response for L2 Query  	2,11	
+	58	L2_QUERY_RSP.DIRTY_C0	Core0 Dirty Response for L2 Query  	2,11	
+	59	L2_QUERY_RSP.DIRTY_C1	Core1 Dirty Response for L2 Query  	2,11	
+	60	L2_QUERY_RSP.DIRTY_C2	Core2 Dirty Response for L2 Query  	2,11	
+	61	L2_QUERY_RSP.DIRTY_C3	Core3 Dirty Response for L2 Query  	2,11	
+	62	L2_TP_LRU_BANK_CONF	All lost arbitrations caused by Lru Bank conflict	2,11	
+	63	L2_TP_MESI_BANK_CONF	All lost arbitrations caused by Mesi Bank conflict	2,11	
+	65	UC_BUS_SNOOP_HIT_L1D_EVENT	All bus Snoops that need query L1D	2,11	
+	66	UC_BUS_SNOOP_HIT_L1I_EVENT	All bus Snoops that need query L1I	2,11	
+	67	UC_BUS_SNOOP_HIT_L2_EVENT	All bus Snoops that only Hit in L2	2,11	
+	68	UC_BUS_SNOOP_HIT_EVENT	All bus Snoops that Hit in L2	2,11	
+	69	L2_RQSTS.DEMAND_DATA_RD_HIT	All L1d Cacheable Requests Hit in L2 pipe.	2,11	
+	70	L2_CODE_LOAD_HIT 	All L1i Cacheable Requests Hit in L2 pipe.	2,11	
+	71	L2_BUS_SNP_HIT l2CtrExtSnpHitReg_P	All bus snoop that hit in L2 (not HitM and the snooped cache line would still be in L2).	2,11	
+	72	L2_CORRECTED_ECC	All corrected L2 Data ECC error(not trigger in CHX001/CNRM DV)	2,11	
+	73	L2_RQSTS.PF_MISS	All preftch miss	2,11	
+	74	LLC Reference	LLC Reference	2,11	
+	75	L2_DATA_LOAD_HIT_C0	Total C0 Data Load Request Hit in L2	2,11	
+	76	L2_DATA_LOAD_HIT_C1	Total C1 Data Load Request Hit in L2	2,11	
+	77	L2_DATA_LOAD_HIT_C2	Total C2 Data Load Request Hit in L2	2,11	
+	78	L2_DATA_LOAD_HIT_C3	Total C3 Data Load Request Hit in L2	2,11	
+	79	L2_TOTAL_L1I_REQ	reques from L1i	2,11	
+	80	L2_CODE_LOAD_HIT_C0	Total C0 Code Load Request Miss in L2	2,11	
+	81	L2_CODE_LOAD_HIT_C1	Total C1 Code Load Request Miss in L2	2,11	
+	82	L2_CODE_LOAD_HIT_C2	Total C2 Code Load Request Miss in L2	2,11	
+	83	L2_CODE_LOAD_HIT_C3	Total C3 Code Load Request Miss in L2	2,11	
+	84	L2_RQSTS.ALL_CODE_RD	same with 11	2,11	
+HIF	0	Bus_clk	Count the Bus clk	13	
+	1	HIF_C2M_NUM_Local	Count the number of local memory access cycles	13	
+	2	HIF_C2M_NUM_Remote	Count the number of remote memory access cycles	13	
+	3	HIF_C2P_NUM_Local	Count the number of local peripheral access cycles	13	
+	4	HIF_C2P_NUM_Remote	Count the number of remote peripheral access cycles	13	
+	5	HIF_C2M_READ_NOT_EMPTY	counts cycles when track has at least 1 outstanding read request to C2MREQCDC	13	
+	6	HIF_C2M_WRITE_NOT_EMPTY	counts cycles when track has at least 1 outstanding write request to C2MREQCDC	13	
+	7	HIF_C2M_WRITE_CACEL_REQ	Counts number of DRAM cancel requests to CMREQCDC. ANY WP mem write	13	
+	8	HIF_P2C_REQ_NUM	Counts the number of p2c hign priority 	13	
+	9	HIF_C2M_READ_OCCUPANCY	normal read request occupancy.	13	
+	10	HIF_C2M_WRITE_OCCUPANCY	normal write request occupancy.	13	
+	11	HIF_C2M_WRITE_FULL_CL	Counts number of full cache line writes to DRAM. 	13	
+	12	HIF_C2M_WRITE_PARTIAL_CL	Counts number of partial cache line writes to DRAM. 	13	
+	13	HIF_C2M_WRITE_EVICTION_ANY	counts cycles evict request to write C2MREQCDC	13	
+	14	HIF_C2M_WRITE_EVICTION_CLEAN	counts cycles evict request without data update snoop table	13	
+	0	VPI_CYCLES_FULL_REQ_TX	counts cycles all entries in REQ_TX channel are full	12	
+	1	VPI_CYCLES_FULL_DATA_TX	counts cycles all entries in DATA_TX channel are full	12	
+	2	VPI_CYCLES_FULL_SNPREQ_TX	counts cycles all entries in SNPREQ_TX channel are full	12	
+	3	VPI_CYCLES_FULL_SNPRSP_TX	counts cycles all entries in SNPRSP_TX channel are full	12	
+	4	VPI_CYCLES_FULL_RSP_TX	counts cycles all entries in RSP_TX channel are full	12	
+	5	VPI_CYCLES_FULL_REQ_RX	counts cycles all entries in REQ_RX channel are full	12	
+	6	VPI_CYCLES_FULL_DATA_RX	counts cycles all entries in DATA_RX channel are full	12	
+	7	VPI_CYCLES_FULL_SNPREQ_RX	counts cycles all entries in SNPREQ_RX channel are full	12	
+	8	VPI_CYCLES_FULL_SNPRSP_RX	counts cycles all entries in SNPRSP_RX channel are full	12	
+	9	VPI_CYCLES_FULL_RSP_RX	counts cycles all entries in RSP_RX channel are full	12	
+	10	VPI_CYCLES_NOT_EMPT_REQ_TX	counts cycles the REQ_TX channel is busy	12	
+	11	VPI_CYCLES_NOT_EMPT_DATA_TX	counts cycles the DATA_TX channel is busy	12	
+	12	VPI_CYCLES_NOT_EMPT_SNPREQ_TX	counts cycles the SNPREQ_TX channel is busy	12	
+	13	VPI_CYCLES_NOT_EMPT_SNPRSP_TX	counts cycles the SNPRSP_TX channel is busy	12	
+	14	VPI_CYCLES_NOT_EMPT_RSP_TX	counts cycles the RSP_TX channel is busy	12	
+	15	VPI_CYCLES_NOT_EMPT_REQ_RX	counts cycles the REQ_RX channel is busy	12	
+	16	VPI_CYCLES_NOT_EMPT_DATA_RX	counts cycles the DATA_RX channel is busy	12	
+	17	VPI_CYCLES_NOT_EMPT_SNPREQ_RX	counts cycles the SNPREQ_RX channel is busy	12	
+	18	VPI_CYCLES_NOT_EMPT_SNPRSP_RX	counts cycles the SNPRSP_RX channel is busy	12	
+	19	VPI_CYCLES_NOT_EMPT_RSP_RX	counts cycles the RSP_RX channel is busy	12	
+	20	VPI_STALLED_REQ_TX	counts cycles when REQ_TX channel is stalled due to lack of channel credits	12	
+	21	VPI_STALLED_DATA_TX	counts cycles when DATA_TX channel is stalled due to lack of channel credits	12	
+	22	VPI_STALLED_SNPREQ_TX	counts cycles when SNPREQ_TX channel is stalled due to lack of channel credits	12	
+	23	VPI_STALLED_SNPRSP_TX	counts cycles when SNPRSP_TX channel is stalled due to lack of channel credits	12	
+	24	VPI_STALLED_RSP_TX	counts cycles when RSP_TX channel is stalled due to lack of channel credits	12	
+	25	VPI_REQUESTS_REQ_TX	counts number of requests of REQ_TX channel	12	
+	26	VPI_REQUESTS_DATA_TX	counts number of requests of DATA_TX channel	12	
+	27	VPI_REQUESTS_SNPREQ_TX	counts number of requests of SNPREQ_TX channel	12	
+	28	VPI_REQUESTS_SNPRSP_TX	counts number of requests of SNPRSP_TX channel	12	
+	29	VPI_REQUESTS_RSP_TX	counts number of requests of RSP_TX channel	12	
+	30	VPI_REQUESTS_REQ_RX	counts number of requests of REQ_RX channel	12	
+	31	VPI_REQUESTS_DATA_RX	counts number of requests of DATA_RX channel	12	
+	32	VPI_REQUESTS_SNPREQ_RX	counts number of requests of SNPREQ_RX channel	12	
+	33	VPI_REQUESTS_SNPRSP_RX	counts number of requests of SNPRSP_RX channel	12	
+	34	VPI_REQUESTS_RSP_RX	counts number of requests of RSP_RX channel	12	
