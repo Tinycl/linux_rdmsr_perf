@@ -88,25 +88,20 @@ long zxperf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		rdmsr(zx.zxperf.msr,zx.zxperf.msr_data_low,zx.zxperf.msr_data_high);
 		break;
 	}
-	case ZXPERF_INIT:
+	case ZXPERF_WRITE:
 	{
 		//disable
 
 		//enable
-		rdmsr(zx.zxperf.core_msr_perf_global_ctrl, zx.zxperf.core_msr_perf_global_ctrl_data_low,zx.zxperf.core_msr_perf_global_ctrl_data_high);
-		zx.zxperf.core_msr_perf_global_ctrl_data_high |= 0xffffffff;
-		zx.zxperf.core_msr_perf_global_ctrl_data_low |= 0xffffffff;
-		wrmsr(zx.zxperf.core_msr_perf_global_ctrl, zx.zxperf.core_msr_perf_global_ctrl_data_low,zx.zxperf.core_msr_perf_global_ctrl_data_high);
+		//rdmsr(zx.zxperf.msr, zx.zxperf.msr_data_low,zx.zxperf.msr_data_high);
+		//zx.zxperf.msr_data_high |= 0xffffffff;
+		//zx.zxperf.msr_data_low |= 0xffffffff;
+		wrmsr(zx.zxperf.msr, zx.zxperf.msr_data_low,zx.zxperf.msr_data_high);
 		break;
 	}
-	case ZXPERF_EVENT_SET:
+	case ZXPERF_READ:
 	{
-		wrmsr(zx.zxperf.core_msr_perf_config_addr,zx.zxperf.core_msr_perf_config_data_low,zx.zxperf.core_msr_perf_config_data_high);
-		break;
-	}
-	case ZXPERF_COUNTER_READ:
-	{
-		rdmsr(zx.zxperf.core_msr_pmc_addr,zx.zxperf.core_msr_pmc_data_low, zx.zxperf.core_msr_pmc_data_high);
+		rdmsr(zx.zxperf.msr,zx.zxperf.msr_data_low, zx.zxperf.msr_data_high);
 		break;
 	}
 	default:

@@ -27,7 +27,6 @@ struct MEASUREEVENT
 	unsigned int end_low;
 	unsigned int end_high;
 };
-
 unsigned int processcount = 0;
 pid_t *childpids;
 int dfd;
@@ -35,7 +34,7 @@ struct ZXPERFTAG funarg;
 unsigned char perf_abort_flag = 0;
 struct  ZXPERFEVENT *pzxperfevents;
 struct MEASUREEVENT *pmeasureevents;
-
+pid_t mainpid;
 void split_config(char* config, unsigned int length, struct MEASUREEVENT *pmeasureevent)
 {
 	int i = 0;
@@ -78,33 +77,38 @@ void split_config(char* config, unsigned int length, struct MEASUREEVENT *pmeasu
 	sscanf(high,"%x", &pmeasureevent->confighigh);
 	sscanf(low,"%x", &pmeasureevent->configlow);
 }
+//flag=0 pmc config; flag = 1 event config; from config to get msr and msr value
 void pmc_counter_write_read_config(struct ZXPERFTAG *pzxperftag, struct MEASUREEVENT pmeasureevent, unsigned char flag)
 {
 	
 	if(!strcmp(pmeasureevent.pmcname, "COREPMC0")) 
 	{	
-		if(flag == 0) //write
+		if(flag == 0)
 		{
-			pzxperftag->zxperf.core_msr_perf_config_addr = IA32_MSR_PERFEVTSEL0;
-			pzxperftag->zxperf.core_msr_perf_config_data_high = pmeasureevent.confighigh;
-			pzxperftag->zxperf.core_msr_perf_config_data_low = pmeasureevent.configlow;
+			pzxperftag->zxperf.msr = IA32_MSR_PERF_PMC0;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
 		}
-		else if(flag == 1) //read
+		else if(flag == 1) 
 		{
-			pzxperftag->zxperf.core_msr_pmc_addr = IA32_MSR_PERF_PMC0;
+			pzxperftag->zxperf.msr = IA32_MSR_PERFEVTSEL0;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
 		}	
 	}
 	else if(!strcmp(pmeasureevent.pmcname, "COREPMC1"))	
 	{
 		if(flag == 0)
 		{
-			pzxperftag->zxperf.core_msr_perf_config_addr = IA32_MSR_PERFEVTSEL1;
-			pzxperftag->zxperf.core_msr_perf_config_data_high = pmeasureevent.confighigh;
-			pzxperftag->zxperf.core_msr_perf_config_data_low = pmeasureevent.configlow;
+			pzxperftag->zxperf.msr = IA32_MSR_PERF_PMC1;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
 		}
 		else if(flag == 1)
 		{
-			pzxperftag->zxperf.core_msr_pmc_addr = IA32_MSR_PERF_PMC1;
+			pzxperftag->zxperf.msr = IA32_MSR_PERFEVTSEL1;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
 		}
 
 	}
@@ -112,52 +116,397 @@ void pmc_counter_write_read_config(struct ZXPERFTAG *pzxperftag, struct MEASUREE
 	{
 		if(flag == 0)
 		{
-			pzxperftag->zxperf.core_msr_perf_config_addr = IA32_MSR_PERFEVTSEL2;
-			pzxperftag->zxperf.core_msr_perf_config_data_high = pmeasureevent.confighigh;
-			pzxperftag->zxperf.core_msr_perf_config_data_low = pmeasureevent.configlow;
+			pzxperftag->zxperf.msr = IA32_MSR_PERF_PMC2;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
 		}
 		else if(flag == 1)
 		{
-			pzxperftag->zxperf.core_msr_pmc_addr = IA32_MSR_PERF_PMC2;
+			pzxperftag->zxperf.msr = IA32_MSR_PERFEVTSEL2;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
 		}
-		
 	}
 	else if(!strcmp(pmeasureevent.pmcname, "COREPMC3"))
 	{
 		if(flag == 0)
 		{
-			pzxperftag->zxperf.core_msr_perf_config_addr = IA32_MSR_PERFEVTSEL3;
-			pzxperftag->zxperf.core_msr_perf_config_data_high = pmeasureevent.confighigh;
-			pzxperftag->zxperf.core_msr_perf_config_data_low = pmeasureevent.configlow;
+			pzxperftag->zxperf.msr = IA32_MSR_PERF_PMC3;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
 		}
 		else if(flag == 1)
 		{
-			pzxperftag->zxperf.core_msr_pmc_addr = IA32_MSR_PERF_PMC3;
+			pzxperftag->zxperf.msr = IA32_MSR_PERFEVTSEL3;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
 		}
-	
 	}
-
-	//printf("config_addr %x", pzxperftag->zxperf.core_msr_perf_config_addr);
-	//printf("config_high %x, config_low %x \n",pzxperftag->zxperf.core_msr_perf_config_data_high, pzxperftag->zxperf.core_msr_perf_config_data_low);
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC0"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC0;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL0;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC1"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC1;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL1;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC2"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC2;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL2;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC3"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC3;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL3;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC4"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC4;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL4;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC5"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC5;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL5;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC6"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC6;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL6;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	else if(!strcmp(pmeasureevent.pmcname, "UNCOREPMC7"))
+	{
+		if(flag == 0)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PMC7;
+			pzxperftag->zxperf.msr_data_high = 0x0;
+			pzxperftag->zxperf.msr_data_low = 0x0;
+		}
+		else if(flag == 1)
+		{
+			pzxperftag->zxperf.msr = IA32_MSR_UNCORE_PERFEVTSEL7;
+			pzxperftag->zxperf.msr_data_high = pmeasureevent.confighigh;
+			pzxperftag->zxperf.msr_data_low = pmeasureevent.configlow;
+		}
+	}
+	//printf("config_addr %x\t", pzxperftag->zxperf.msr);
+	//printf("config_high %x, config_low %x \n",pzxperftag->zxperf.msr_data_high, pzxperftag->zxperf.msr_data_low);
 
 }
 
+void zxperf_init()
+{
+	int j = 0;
+	struct ZXPERFTAG zxperfinit;
+	if(funarg.coreeventnum > 0)
+	{
+		//disable
+		zxperfinit.zxperf.msr = IA32_MSR_PERF_GLOBAL_CTRL;
+		zxperfinit.zxperf.msr_data_high = 0x0;
+		zxperfinit.zxperf.msr_data_low = 0x0;
+		ioctl(dfd,ZXPERF_WRITE,&zxperfinit);
+	}
+	if(funarg.uncoreeventnum > 0)
+	{
+		//disable
+		zxperfinit.zxperf.msr = IA32_MSR_UNCORE_PERF_GLOBAL_CTRL;
+		zxperfinit.zxperf.msr_data_high = 0x0;
+		zxperfinit.zxperf.msr_data_low = 0x0;
+		ioctl(dfd,ZXPERF_WRITE,&zxperfinit);
+	}
+	//pmc counter clear to 0
+	for(j = 0; j < (funarg.coreeventnum + funarg.uncoreeventnum); j++)
+	{
+		pmc_counter_write_read_config(&zxperfinit,pmeasureevents[j],0);
+		ioctl(dfd,ZXPERF_WRITE,&zxperfinit);
+	}
+	
+	if(funarg.coreeventnum > 0)
+	{
+		//enable
+		zxperfinit.zxperf.msr = IA32_MSR_PERF_GLOBAL_CTRL;
+		zxperfinit.zxperf.msr_data_high = 0xffffffff;
+		zxperfinit.zxperf.msr_data_low = 0xffffffff;
+		ioctl(dfd,ZXPERF_WRITE,&zxperfinit);
+	}
+	if(funarg.uncoreeventnum > 0)
+	{
+		//enable
+		zxperfinit.zxperf.msr = IA32_MSR_UNCORE_PERF_GLOBAL_CTRL;
+		zxperfinit.zxperf.msr_data_high = 0xffffffff;
+		zxperfinit.zxperf.msr_data_low = 0xffffffff;
+		ioctl(dfd,ZXPERF_WRITE,&zxperfinit);
+	}
+	//event config
+	for(j = 0; j < (funarg.coreeventnum + funarg.uncoreeventnum); j++)
+	{	
+		pmc_counter_write_read_config(&zxperfinit,pmeasureevents[j],1);
+		//printf("config_addr %x\t", zxperfinit.zxperf.msr);
+		//printf("config_high %x, config_low %x \n",zxperfinit.zxperf.msr_data_high, zxperfinit.zxperf.msr_data_low);
+		ioctl(dfd,ZXPERF_WRITE,&zxperfinit);
+	}
+}
+void overflow_process()
+{
+	int j = 0;
+	struct ZXPERFTAG overflow;
+	for(j = 0; j < (funarg.coreeventnum + funarg.uncoreeventnum); j++)
+	{
+		if(!strcmp(pmeasureevents[j].pmcname, "COREPMC0"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 0 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,0);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_PERF_PMC0;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+		else if(!strcmp(pmeasureevents[j].pmcname, "COREPMC1"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 1 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,1);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_PERF_PMC1;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+		else if(!strcmp(pmeasureevents[j].pmcname, "COREPMC2"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 2 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,2);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_PERF_PMC2;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+		else if(!strcmp(pmeasureevents[j].pmcname, "COREPMC3"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 3 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_PERF_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,3);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_PERF_PMC3;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+		else if(!strcmp(pmeasureevents[j].pmcname, "UNCOREPMC0"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_UNCORE_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 0 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_UNCORE_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,0);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_UNCORE_PMC0;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+		else if(!strcmp(pmeasureevents[j].pmcname, "UNCOREPMC1"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_UNCORE_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 1 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_UNCORE_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,1);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_UNCORE_PMC1;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+		else if(!strcmp(pmeasureevents[j].pmcname, "UNCOREPMC2"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_UNCORE_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 2 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_UNCORE_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,2);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_UNCORE_PMC2;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+		else if(!strcmp(pmeasureevents[j].pmcname, "UNCOREPMC3"))
+		{	
+			//overflow status
+			overflow.zxperf.msr = IA32_MSR_UNCORE_PERF_GLOBAL_STATUS;
+			ioctl(dfd,ZXPERF_READ,&overflow);
+			if(overflow.zxperf.msr_data_low >> 3 & 1)
+			{
+				pmeasureevents[j].overflowcount ++;
+				//overflow control
+				overflow.zxperf.msr = IA32_MSR_UNCORE_GLOBAL_OVF_CTRL;
+				ioctl(dfd,ZXPERF_RDMSR,&overflow);
+				setbit(overflow.zxperf.msr_data_low,3);
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+				//PMC clear 0
+				overflow.zxperf.msr = IA32_MSR_UNCORE_PMC3;
+				overflow.zxperf.msr_data_high = 0x0;
+				overflow.zxperf.msr_data_low = 0x0;
+				ioctl(dfd,ZXPERF_WRMSR,&overflow);
+			}	
+		}
+	}
+}
 
 void sig_handle(int sig)
 {
-	int status;
-	pid_t pid;
+
 	switch (sig)
 	{
 		case SIGALRM:
 		{
-			//ioctl(dfd,ZXPERF_COUNTER_READ,&funarg);
-			//printf("core %d: core_msr_pmc0_counter high: 0x%x  low: 0x%x\n",funarg.whichcpu,funarg.zxperf.core_msr_pmc0_data_high,funarg.zxperf.core_msr_pmc0_data_low);
+			overflow_process();
 			break;
 		}
 		case SIGINT:
 		{
 			perf_abort_flag = 1;
+			/*
+			if(mainpid == getpid())
+			{
+				printf("end to count\n");
+			}
+			*/
 			break;
 		}
 		default:
@@ -172,6 +521,8 @@ int zxperf_process(struct ZXPERFTAG funarg)
 	int flag = 0;
 	unsigned int timecount = 0;
 	struct itimerval tick;
+	unsigned long long starttemp = 0;
+	unsigned long long endtemp = 0;
 	CPU_ZERO(&mask);  //init set and set set null
 	CPU_SET(funarg.whichcpu, &mask);//put cpu to the mask
 	if(sched_setaffinity(0,sizeof(mask),&mask) == -1)  //set affinity to cpu
@@ -222,25 +573,17 @@ int zxperf_process(struct ZXPERFTAG funarg)
 
 		case PERF:
 		{
-			ioctl(dfd,ZXPERF_INIT,&funarg);
-			
-			for(j = 0; j < (funarg.coreeventnum + funarg.uncoreeventnum); j++)
-			{	
-				pmc_counter_write_read_config(&funarg,pmeasureevents[j],0);
-				printf("%x\n", funarg.zxperf.core_msr_perf_config_addr);
-				ioctl(dfd,ZXPERF_EVENT_SET,&funarg);
-			}
-
+		
+			zxperf_init();
+			//read counter
 			for(j = 0; j < (funarg.coreeventnum + funarg.uncoreeventnum); j++)
 			{
-				pmc_counter_write_read_config(&funarg,pmeasureevents[j],1);
-				printf("%x\n", funarg.zxperf.core_msr_pmc_addr);
-				ioctl(dfd,ZXPERF_COUNTER_READ,&funarg);
-				
-				pmeasureevents[j].start_low = funarg.zxperf.core_msr_pmc_data_low;
-				pmeasureevents[j].start_high = funarg.zxperf.core_msr_pmc_data_high;
+				pmc_counter_write_read_config(&funarg,pmeasureevents[j],0);
+				ioctl(dfd,ZXPERF_READ,&funarg);
+				pmeasureevents[j].start_low = funarg.zxperf.msr_data_low;
+				pmeasureevents[j].start_high = funarg.zxperf.msr_data_high;
 				pmeasureevents[j].whichcore = funarg.whichcpu;
-				printf("start: core %d: %s high: 0x%x  low: 0x%x\n",pmeasureevents[j].whichcore,pmeasureevents[j].eventname,pmeasureevents[j].start_high,pmeasureevents[j].start_low);
+				//printf("start: core %d: %s high: 0x%x  low: 0x%x\n",pmeasureevents[j].whichcore,pmeasureevents[j].eventname,pmeasureevents[j].start_high,pmeasureevents[j].start_low);
 			}
 			tick.it_value.tv_sec = 0;
 			tick.it_value.tv_usec = 10;
@@ -256,12 +599,16 @@ int zxperf_process(struct ZXPERFTAG funarg)
 			}
 			for(j = 0; j < (funarg.coreeventnum + funarg.uncoreeventnum); j++)
 			{
-				pmc_counter_write_read_config(&funarg,pmeasureevents[j],1);
-				ioctl(dfd,ZXPERF_COUNTER_READ,&funarg);
-				pmeasureevents[j].end_low = funarg.zxperf.core_msr_pmc_data_low;
-				pmeasureevents[j].end_high = funarg.zxperf.core_msr_pmc_data_high;
+				pmc_counter_write_read_config(&funarg,pmeasureevents[j],0);
+				ioctl(dfd,ZXPERF_READ,&funarg);
+				pmeasureevents[j].end_low = funarg.zxperf.msr_data_low;
+				pmeasureevents[j].end_high = funarg.zxperf.msr_data_high;
 				pmeasureevents[j].whichcore = funarg.whichcpu;
-				printf("end: core %d: %s high: 0x%x  low: 0x%x\n",pmeasureevents[j].whichcore,pmeasureevents[j].eventname,pmeasureevents[j].start_high,pmeasureevents[j].start_low);
+				//printf("end: core %d: %s high: 0x%x  low: 0x%x\n",pmeasureevents[j].whichcore,pmeasureevents[j].eventname,pmeasureevents[j].start_high,pmeasureevents[j].start_low);
+				//+
+				endtemp = ((unsigned long)pmeasureevents[j].end_high<<32) | pmeasureevents[j].end_low;
+				starttemp = ((unsigned long)pmeasureevents[j].start_high<<32) | pmeasureevents[j].start_low;
+				printf("core %d\t: %s: \tovercount: %d \tcounter: 0x%llx \n",pmeasureevents[j].whichcore,pmeasureevents[j].eventname, pmeasureevents[j].overflowcount, endtemp - starttemp);
 			}
 			break;
 		}
@@ -286,7 +633,6 @@ int main(int argc, char **argv)
 	int cpunum = 0;
 	int i = 0;
 	int j = 0;
-	pid_t mainpid;
 	pid_t pid;
 	int status;
 	FILE* pconfig;
@@ -320,6 +666,7 @@ int main(int argc, char **argv)
 	}
 	else if(!strcmp(argv[1], "-perf"))
 	{
+		printf("final counter is: overcount*0xffffffffffff + counter \n");
 		pconfig = fopen("coreevent.txt","r");
 		while(fgets(config,512,pconfig))
 		{
@@ -341,17 +688,17 @@ int main(int argc, char **argv)
 		pmeasureevents = (struct MEASUREEVENT *)malloc(sizeof(struct MEASUREEVENT) * (funarg.coreeventnum + funarg.uncoreeventnum));
 		pconfig = fopen("coreevent.txt","r");
 		j = 0;
+		
 		while(fgets(config,512,pconfig))
 		{
 			if(config[0] == ',' )
 			{	
 				
 				split_config(config, strlen(config),&pmeasureevents[j]);
-				printf("eventname %s\n",pmeasureevents[j].eventname);
-				printf("pmcname %s\n",pmeasureevents[j].pmcname);
-				printf("confhigh %d\n", pmeasureevents[j].confighigh);
-				printf("conflow %d\n",pmeasureevents[j].configlow);
-				
+				//printf("eventname %s\n",pmeasureevents[j].eventname);
+				//printf("pmcname %s\n",pmeasureevents[j].pmcname);
+				//printf("confhigh %d\n", pmeasureevents[j].confighigh);
+				//printf("conflow %d\n",pmeasureevents[j].configlow);
 				j++;
 				
 			}
@@ -363,24 +710,22 @@ int main(int argc, char **argv)
 		{
 			if(config[0] == ',')
 			{	
-			
-				
 				split_config(config, strlen(config),&pmeasureevents[j]);
-				printf("eventname %s\n",pmeasureevents[j].eventname);
-				printf("pmcname %s\n",pmeasureevents[j].pmcname);
-				printf("confhigh %d\n", pmeasureevents[j].confighigh);
-				printf("conflow %d\n",pmeasureevents[j].configlow);
+				//printf("eventname %s\n",pmeasureevents[j].eventname);
+				//printf("pmcname %s\n",pmeasureevents[j].pmcname);
+				//printf("confhigh %x\n", pmeasureevents[j].confighigh);
+				//printf("conflow %x\n",pmeasureevents[j].configlow);
 				j++;
 			}
 		}
 		fclose(pconfig);
+		
 		zxperfevents_init(&pzxperfevents); //init zx support total events 
-		funarg.zxperf.core_msr_perf_global_ctrl = IA32_MSR_PERF_GLOBAL_CTRL;
 		funarg.function = PERF;
 		
 		for(i = 0; i < (funarg.coreeventnum + funarg.uncoreeventnum); i++)
 		{
-			//printf("%s  %s\n", pmeasureevents[i].pmcname, pmeasureevents[i].eventname);
+			pmeasureevents[i].overflowcount = 0;
 			if(pmeasureevents[i].confighigh == 0 && pmeasureevents[i].configlow == 0) // low =0 and high = 0, use default msr config else use user config
 			{
 				for(j = 0; j < ZXEVENTTOTAL; j++)
@@ -398,8 +743,8 @@ int main(int argc, char **argv)
 			
 		}
 	}
+	
 	//return 0;
-
 	for(processcount = 0; processcount < cpunum; processcount++)
 	{
 		 pid = fork();  //pid == 0 is new child process id   

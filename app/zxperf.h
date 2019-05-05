@@ -4,9 +4,9 @@
 #define ZXPERF_MAGIC 'Z'
 #define ZXPERF_RDMSR _IO(ZXPERF_MAGIC,0)
 #define ZXPERF_WRMSR _IO(ZXPERF_MAGIC,1)
-#define ZXPERF_INIT _IO(ZXPERF_MAGIC,2)
-#define ZXPERF_EVENT_SET _IO(ZXPERF_MAGIC,3)
-#define ZXPERF_COUNTER_READ _IO(ZXPERF_MAGIC,4)
+#define ZXPERF_WRITE _IO(ZXPERF_MAGIC,2)
+#define ZXPERF_READ _IO(ZXPERF_MAGIC,3)
+
 
 #define IA32_MSR_PERF_GLOBAL_CTRL 0x38f
 #define IA32_MSR_PERF_GLOBAL_STATUS 0x38e
@@ -47,23 +47,14 @@
 #define IA32_MSR_UNCORE_PMC6 0x3b6
 #define IA32_MSR_UNCORE_PMC7 0x3b7
 
+
+#define setbit(num,y) num |= (1<<y) // num y bit set 1
+#define clearbit(num,y) num &= ~(1<<y)
 struct ZXPERF
 {
 	unsigned int msr;
 	unsigned int msr_data_low;
 	unsigned int msr_data_high;
-
-	unsigned int core_msr_perf_global_ctrl;
-	unsigned int core_msr_perf_global_ctrl_data_low;
-	unsigned int core_msr_perf_global_ctrl_data_high;
-
-
-	unsigned int core_msr_perf_config_addr;
-	unsigned int core_msr_perf_config_data_low;
-	unsigned int core_msr_perf_config_data_high;
-	unsigned int core_msr_pmc_addr;
-	unsigned int core_msr_pmc_data_low;
-	unsigned int core_msr_pmc_data_high;
 };
 
 
