@@ -3,6 +3,11 @@ import os
 import sys
 import time
 
+'''
+event_config.txt format:
+core:evtsel_l1i_access:0x430300
+uncore:evtsel_bus_clk:0x430d00
+'''
 
 
 IA32_MSR_PERF_GLOBAL_CTRL  = 0x38f
@@ -163,95 +168,183 @@ def GetEventConfig():
                     pass                                                                                                                                                                                                                                                                         
 
 def ProcessNoFixedPMC():
-    corepmcnum = 0
-    corepmc0 = ""
-    corepmc1 = ""
-    corepmc2 = ""
-    corepmc3 = ""
-    for evkey, evvalue in core_event_config_dic.items():
-        if corepmcnum % 4 == 0:
-            corepmc0 = evkey
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL0,0x0,evvalue)
-        elif corepmcnum % 4 == 1:
-            corepmc1 = evkey
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL1,0x0,evvalue)
-        elif corepmcnum % 4 == 2:
-            corepmc2 = evkey
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL2,0x0,evvalue)
-        elif corepmcnum % 4 == 3:
-            corepmc3 = evkey
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL3,0x0,evvalue)
-        else:
-            pass
-        corepmcnum = corepmcnum + 1
-        if corepmcnum >= 4 and corepmcnum % 4 == 0:
-            WrmsrCmd(-1,IA32_MSR_PERF_PMC0,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_PERF_PMC1,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_PERF_PMC2,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_PERF_PMC3,0x0,0x0)
-            time.sleep(0.5)
-            if corepmc0 != "":
-                event_result_dic[corepmc0] = RdmsrCmd(-1, IA32_MSR_PERF_PMC0)
-            if corepmc1 != "":   
-                event_result_dic[corepmc1] = RdmsrCmd(-1, IA32_MSR_PERF_PMC1)
-            if corepmc2 != "":
-                event_result_dic[corepmc2] = RdmsrCmd(-1, IA32_MSR_PERF_PMC2)
-            if corepmc3 != "":
-                event_result_dic[corepmc3] = RdmsrCmd(-1, IA32_MSR_PERF_PMC3)
-            corepmc0 = ""
-            corepmc1 = ""
-            corepmc2 = ""
-            corepmc3 = ""
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL0,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL1,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL2,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL3,0x0,0x0)
+    core_event_config_keys_list = core_event_config_dic.keys()
+    uncore_event_config_keys_list = uncore_event_config_dic.keys()
+    core_uncore_maxlen = 0
+    if len(core_event_config_keys_list) >= len(uncore_event_config_keys_list):
+        core_uncore_maxlen = len(core_event_config_keys_list)
+    else:
+        core_uncore_maxlen = len(uncore_event_config_keys_list)
     
+    # core sel config, chx002 support 4 pmcs
+    core_event_key_sel0 = ""
+    core_event_key_sel1 = ""
+    core_event_key_sel2 = ""
+    core_event_key_sel3 = ""
+    # uncore sel config, chx002 support 4 pmcs 
+    uncore_event_key_sel0 = ""
+    uncore_event_key_sel1 = ""
+    uncore_event_key_sel2 = ""
+    uncore_event_key_sel3 = ""
+    # assign need sample events to four core pmc msrs or four uncore pmc msrs  
+    for i in range(0,core_uncore_maxlen):
+        core_event_key_sel0 = ""
+        core_event_key_sel1 = ""
+        core_event_key_sel2 = ""
+        core_event_key_sel3 = ""
+        uncore_event_key_sel0 = ""
+        uncore_event_key_sel1 = ""
+        uncore_event_key_sel2 = ""
+        uncore_event_key_sel3 = ""  
+        # core     
+        try:
+            if core_event_config_keys_list[i]:
+                try:
+                    if core_event_config_keys_list[i][0]:
+                        core_event_key_sel0 = core_event_config_keys_list[i][0]
+                except:
+                    core_event_key_sel0 = ""
+                    pass
 
-    
-    uncorepmcnum = 0
-    uncorepmc0 = ""
-    uncorepmc1 = ""
-    uncorepmc2 = ""
-    uncorepmc3 = ""
-    for evkey, evvalue in uncore_event_config_dic.items():
-        if uncorepmcnum % 4 == 0:
-            uncorepmc0 = evkey
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL0,0x0,evvalue)
-        elif uncorepmcnum % 4 == 1:
-            uncorepmc1 = evkey
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL1,0x0,evvalue)
-        elif uncorepmcnum % 4 == 2:
-            uncorepmc2 = evkey
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL2,0x0,evvalue)
-        elif uncorepmcnum % 4 == 3:
-            uncorepmc3 = evkey
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL3,0x0,evvalue)
-        else:
+                try:
+                    if core_event_config_keys_list[i][1]:
+                        core_event_key_sel1 = core_event_config_keys_list[i][1]
+                except:
+                    core_event_key_sel1 = ""
+                    pass
+
+                try:
+                    if core_event_config_keys_list[i][2]:
+                        core_event_key_sel2 = core_event_config_keys_list[i][2]
+                except:
+                    core_event_key_sel2 = ""
+                    pass
+
+                try:
+                    if core_event_config_keys_list[i][3]:
+                        core_event_key_sel3 = core_event_config_keys_list[i][3]
+                except:
+                    core_event_key_sel3 = ""
+                    pass
+        except:
+            core_event_key_sel0 = ""
+            core_event_key_sel1 = ""
+            core_event_key_sel2 = ""
+            core_event_key_sel3 = ""
             pass
-        uncorepmcnum = uncorepmcnum + 1
-        if uncorepmcnum >= 4 and uncorepmcnum % 4 == 0:
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PMC0,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PMC1,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PMC2,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PMC3,0x0,0x0)
-            time.sleep(0.5)
-            if uncorepmc0 != "":
-                event_result_dic[uncorepmc0] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC0)
-            if uncorepmc1 != "":   
-                event_result_dic[uncorepmc1] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC1)
-            if uncorepmc2 != "":
-                event_result_dic[uncorepmc2] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC2)
-            if uncorepmc3 != "":
-                event_result_dic[uncorepmc3] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC3)
-            uncorepmc0 = ""
-            uncorepmc1 = ""
-            uncorepmc2 = ""
-            uncorepmc3 = ""
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL0,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL1,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL2,0x0,0x0)
-            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL3,0x0,0x0)
+        # uncore
+        try:
+            if uncore_event_config_keys_list[i]:
+                try:
+                    if uncore_event_config_keys_list[i][0]:
+                        uncore_event_key_sel0 = uncore_event_config_keys_list[i][0]
+                except:
+                    uncore_event_key_sel0 = ""
+                    pass
+
+                try:
+                    if uncore_event_config_keys_list[i][1]:
+                        uncore_event_key_sel1 = uncore_event_config_keys_list[i][1]
+                except:
+                    uncore_event_key_sel1 = ""
+                    pass
+
+                try:
+                    if uncore_event_config_keys_list[i][2]:
+                        uncore_event_key_sel2 = uncore_event_config_keys_list[i][2]
+                except:
+                    uncore_event_key_sel2 = ""
+                    pass
+
+                try:
+                    if uncore_event_config_keys_list[i][3]:
+                        uncore_event_key_sel3 = uncore_event_config_keys_list[i][3]
+                except:
+                    uncore_event_key_sel3 = ""
+                    pass
+        except:
+            uncore_event_key_sel0 = ""
+            uncore_event_key_sel1 = ""
+            uncore_event_key_sel2 = ""
+            uncore_event_key_sel3 = ""
+            pass
+        ## disable pmc
+        # core
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL0,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL1,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL2,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL3,0x0,0x0)
+        # uncore
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL0,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL1,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL2,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL3,0x0,0x0)
+        ## enable pmc
+        # core
+        if core_event_key_sel0 != "":
+            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL0,0x0,core_event_config_dic[core_event_key_sel0])
+        if core_event_key_sel1 != "":
+            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL1,0x0,core_event_config_dic[core_event_key_sel1])
+        if core_event_key_sel2 != "":
+            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL2,0x0,core_event_config_dic[core_event_key_sel2])
+        if core_event_key_sel3 != "":
+            WrmsrCmd(-1,IA32_MSR_PERFEVTSEL3,0x0,core_event_config_dic[core_event_key_sel3])
+        # uncore
+        if uncore_event_key_sel0 != "":
+            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL0,0x0,uncore_event_config_dic[uncore_event_key_sel0])
+        if uncore_event_key_sel1 != "":
+            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL1,0x0,uncore_event_config_dic[uncore_event_key_sel1])
+        if uncore_event_key_sel2 != "":
+            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL2,0x0,uncore_event_config_dic[uncore_event_key_sel2])
+        if uncore_event_key_sel3 != "":
+            WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL3,0x0,uncore_event_config_dic[uncore_event_key_sel3])
+
+        ## pmc counter clear 0
+        # core
+        WrmsrCmd(-1,IA32_MSR_PERF_PMC0,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERF_PMC1,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERF_PMC2,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERF_PMC3,0x0,0x0)
+        # uncore
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PMC0,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PMC1,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PMC2,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PMC3,0x0,0x0)
+
+        ## set sample time 
+        time.sleep(0.5)
+
+        ## get pmc conter
+        # core
+        if core_event_key_sel0 != "":
+            event_result_dic[core_event_key_sel0] = RdmsrCmd(-1, IA32_MSR_PERF_PMC0)
+        if core_event_key_sel1 != "":
+            event_result_dic[core_event_key_sel1] = RdmsrCmd(-1, IA32_MSR_PERF_PMC1)
+        if core_event_key_sel2 != "":
+            event_result_dic[core_event_key_sel2] = RdmsrCmd(-1, IA32_MSR_PERF_PMC2)
+        if core_event_key_sel3 != "":
+            event_result_dic[core_event_key_sel3] = RdmsrCmd(-1, IA32_MSR_PERF_PMC3)
+        # uncore
+        if uncore_event_key_sel0 != "":
+            event_result_dic[uncore_event_key_sel0] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC0) 
+        if uncore_event_key_sel1 != "":
+            event_result_dic[uncore_event_key_sel1] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC1)
+        if uncore_event_key_sel2 != "":
+            event_result_dic[uncore_event_key_sel2] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC2)
+        if uncore_event_key_sel3 != "":
+            event_result_dic[uncore_event_key_sel3] = RdmsrCmd(-1, IA32_MSR_UNCORE_PMC3)                   
+
+        ## disable pmc
+        # core
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL0,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL1,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL2,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_PERFEVTSEL3,0x0,0x0)
+        # uncore
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL0,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL1,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL2,0x0,0x0)
+        WrmsrCmd(-1,IA32_MSR_UNCORE_PERFEVTSEL3,0x0,0x0)
 
 
 def SaveResultToTxt(outfilename):
